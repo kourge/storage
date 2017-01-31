@@ -1,0 +1,36 @@
+{
+  "name": "storage",
+  "version": "0.0.1",
+  "description": "A library for returning a localStorage compatible API, regardless of browser",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "tslint ./src/**/*.ts",
+    "test": "mocha --require ts-node/register ./src/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UrbanDoor/storage.git"
+  },
+  "keywords": [
+    "localstorage",
+    "sessionstorage",
+    "cookies",
+    "storage",
+    "typescript"
+  ],
+  "author": "Ben Bayard (bjbayard@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UrbanDoor/storage/issues"
+  },
+  "homepage": "https://github.com/UrbanDoor/storage#readme",
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.38",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "ts-node": "^2.0.0",
+    "tslint": "^4.4.2",
+    "typescript": "^2.1.5"
+  }
+}
