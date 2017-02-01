@@ -1,5 +1,7 @@
 import * as moment from 'moment';
-import {Cookier} from './';
+import {CookieJar} from './cookie_storage';
+
+export const dateFormat = 'ddd, DD MMM YYYY HH:mm:ss';
 
 export interface Cookie {
   key: string;
@@ -8,7 +10,7 @@ export interface Cookie {
   path?: string;
 }
 
-interface MockCookier extends Cookier {
+interface InMemoryCookieJar extends CookieJar {
   value: {[key: string]: Cookie};
 }
 
@@ -19,7 +21,7 @@ export function parseCookie(cookie: string): Cookie {
   const cookedCookie: Cookie = {key, value};
   if (rest.length === 2) {
     const [_, expires] = rest[0].split('=');
-    cookedCookie.expires = moment(expires, 'ddd, DD MMM YYYY HH:mm:ss');
+    cookedCookie.expires = moment(expires.trim(), dateFormat);
     cookedCookie.path = rest[1].trim();
   }
   if (rest.length === 1) {
@@ -29,26 +31,27 @@ export function parseCookie(cookie: string): Cookie {
   return cookedCookie;
 }
 
-export const mock: MockCookier = {
+export const memoryCookieJar: InMemoryCookieJar = {
   value: {},
 
   get cookie() {
-    let returnValue = '';
+    let result = '';
     const {value} = this;
-    for (const {key, expires} of value) {
+    Object.keys(value).forEach((key) => {
+      const {expires} = value[key];
       // if there is an expiry and the expiry is in the past
       // delete it. This is just how cookies work, unfortunately.
       if (expires && expires.diff(moment()) < 0) {
-        delete this.value[key];
+        delete value[key];
       }
-    }
+    });
     // cookies returned from 'document.cookie' only have the key and value
     // shown, but the other values are there, just hidden
     Object.keys(value).forEach((key) => {
       const {value: cookieValue} = value[key];
-      returnValue += `${key}=${cookieValue}; `;
+      result += `${key}=${cookieValue}; `;
     });
-    return returnValue.trim();
+    return result.trim();
   },
 
   set cookie(value) {
