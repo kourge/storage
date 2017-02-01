@@ -1,14 +1,4 @@
-
-export interface Storable {
-  readonly length: number;
-  clear(): void;
-  getItem(key: string): string | null;
-  key(index: number): string | null;
-  removeItem(key: string): void;
-  setItem(key: string, data: string): void;
-}
-
-function generateCookie(
+export function generateCookie(
   key: string,
   data: string,
   days: number,
@@ -22,52 +12,71 @@ function generateCookie(
   return `${prefix}${key}=${data}${expires}; path=/`;
 }
 
-function cookieStorage (
+export interface Cookier {
+  cookie: string;
+}
+
+export interface Storable {
+  readonly length: number;
+  clear(): void;
+  getItem(key: string): string | null;
+  key(index: number): string | null;
+  removeItem(key: string): void;
+  setItem(key: string, data: string): void;
+}
+
+export function cookieStorage (
   isSession: boolean,
+  cookier: Cookier = document,
   prefix = '__storage__'
 ): Storable {
   return {
     get length() {
-      return document.cookie.split(';').filter(
+      return cookier.cookie.split(';').filter(
         (cookie) => cookie.indexOf(prefix) !== -1).length;
     },
 
     clear() {
-      document.cookie.split(';').filter(
+      cookier.cookie.split(';').filter(
         (cookie) => cookie.indexOf(prefix) !== -1
       ).map(
-        (c) => c.substring(prefix.length)
+        (nameWithEq) => {
+          return nameWithEq.split('=')[0].trim().substring(prefix.length);
+        }
       ).forEach(
-        (c) => this.removeItem(c)
+        (name) => {
+          return this.removeItem(name);
+        }
       );
     },
 
     getItem(key: string): string | null {
-      const nameEQ = `${prefix}${key}=`;
-      const ca = document.cookie.split(';');
-      for (let c of ca) {
-        while (c.charAt(0) === ' ') {
-          c = c.substring(1, c.length);
-        }
-        if (c.indexOf(nameEQ) === 0) {
-          return c.substring(nameEQ.length, c.length);
+      const prefixedNameWithEq = `${prefix}${key}=`;
+      const cookieList = cookier.cookie.split(';');
+      for (let cookieName of cookieList) {
+        cookieName = cookieName.trim();
+        if (cookieName.indexOf(prefixedNameWithEq) === 0) {
+          return cookieName.substring(
+            prefixedNameWithEq.length,
+            cookieName.length
+          );
         }
       }
       return null;
     },
 
     setItem(key: string, data: string): void {
-      document.cookie = isSession
+      cookier.cookie = isSession
         ? generateCookie(key, data, 0, prefix)
         : generateCookie(key, data, 30, prefix);
     },
 
     removeItem(key: string) {
-      document.cookie = generateCookie(key, '', -1, prefix);
+      cookier.cookie = generateCookie(key, '', -1, prefix);
     },
 
     key(index: number) {
-      const cookies = document.cookie
+      const cookies = cookier.cookie
         .split(';')
         .filter((cookie) => cookie.indexOf(prefix) !== -1);
       const val = cookies[index];
@@ -80,7 +89,7 @@ function cookieStorage (
 export default class <T extends {}> implements Storable {
   private storageMedium: Storable;
 
-  constructor(private session = false) {
+  constructor(private session = false, private cookier: Cookier = document) {
     try {
       localStorage.setItem('testtesttest', '1');
       localStorage.removeItem('testtesttest');
@@ -90,10 +99,10 @@ export default class <T extends {}> implements Storable {
           ? window.sessionStorage
           : window.localStorage;
       } else {
-        this.storageMedium = cookieStorage(this.session);
+        this.storageMedium = cookieStorage(this.session, this.cookier);
       }
     } catch (_) {
-      this.storageMedium = cookieStorage(this.session);
+      this.storageMedium = cookieStorage(this.session, this.cookier);
     }
   }
 
