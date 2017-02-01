@@ -1,13 +1,13 @@
 import {expect} from 'chai';
 import * as moment from 'moment';
 import {
-  memoryCookieJar,
-  dateFormat
-} from './cookie_helpers';
-import {
   CookieStorage,
   LOCAL_STORAGE_DAYS
 } from './cookie_storage';
+import {
+  dateFormat,
+  memoryCookieJar
+} from './in_memory_cookie_jar';
 
 describe('storage', () => {
   let cookieStorage: CookieStorage;

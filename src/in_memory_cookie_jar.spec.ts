@@ -5,7 +5,7 @@ import {
   dateFormat,
   memoryCookieJar,
   parseCookie
-} from './cookie_helpers';
+} from './in_memory_cookie_jar';
 
 describe('parseCookie', () => {
   let result: Cookie;
