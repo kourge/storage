@@ -1,7 +1,7 @@
 import {CookieJar, CookieStorage} from './cookie_storage';
 import {StorageEngine} from './storage_engine';
-export default class <T extends {}> implements StorageEngine {
-  private storageMedium: StorageEngine;
+export default class UniversalStorage implements StorageEngine {
+  private engine: StorageEngine;
 
   constructor(private session = false, private cookier: CookieJar = document) {
     try {
@@ -9,38 +9,38 @@ export default class <T extends {}> implements StorageEngine {
       localStorage.removeItem('testtesttest');
       // tslint:disable-next-line:no-string-literal
       if ('localStorage' in window && window['localStorage'] !== null) {
-        this.storageMedium = this.session
+        this.engine = this.session
           ? window.sessionStorage
           : window.localStorage;
       } else {
-        this.storageMedium = new CookieStorage(this.session, this.cookier);
+        this.engine = new CookieStorage(this.session, this.cookier);
       }
     } catch (_) {
-      this.storageMedium = new CookieStorage(this.session, this.cookier);
+      this.engine = new CookieStorage(this.session, this.cookier);
     }
   }
 
   public get length(): number {
-    return this.storageMedium.length;
+    return this.engine.length;
   }
 
   public getItem(key: string) {
-    return this.storageMedium.getItem(key);
+    return this.engine.getItem(key);
   }
 
-  public setItem(key: keyof T, data: string) {
-    return this.storageMedium.setItem(key, data);
+  public setItem(key: string, data: string) {
+    return this.engine.setItem(key, data);
   }
 
   public clear() {
-    return this.storageMedium.clear();
+    return this.engine.clear();
   }
 
-  public removeItem(key: keyof T) {
-    return this.storageMedium.removeItem(key);
+  public removeItem(key: string) {
+    return this.engine.removeItem(key);
   }
 
   public key(index: number) {
-    return this.storageMedium.key(index);
+    return this.engine.key(index);
   }
 }

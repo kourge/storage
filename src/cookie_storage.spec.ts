@@ -6,11 +6,15 @@ import {
 } from './cookie_storage';
 import {
   dateFormat,
-  memoryCookieJar
+  InMemoryCookieJar
 } from './in_memory_cookie_jar';
 
 describe('storage', () => {
   let cookieStorage: CookieStorage;
+  let memoryCookieJar: InMemoryCookieJar;
+  beforeEach(() => {
+    memoryCookieJar = new InMemoryCookieJar();
+  });
   describe('session cookies', () => {
     beforeEach(() => {
       memoryCookieJar.value = {};

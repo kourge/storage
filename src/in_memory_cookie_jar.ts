@@ -10,29 +10,25 @@ export interface Cookie {
   path?: string;
 }
 
-interface InMemoryCookieJar extends CookieJar {
-  value: {[key: string]: Cookie};
-}
+export class InMemoryCookieJar implements CookieJar {
+  public value: {[cookieName: string]: Cookie} = {};
 
-export function parseCookie(cookie: string): Cookie {
-  const [key] = cookie.split('=');
-  const cookieWithoutValue = cookie.substring(key.length + 1);
-  const [value, ...rest] = cookieWithoutValue.split(';');
-  const cookedCookie: Cookie = {key, value};
-  if (rest.length === 2) {
-    const [_, expires] = rest[0].split('=');
-    cookedCookie.expires = moment(expires.trim(), dateFormat);
-    cookedCookie.path = rest[1].trim();
+  public parseCookie(cookie: string): Cookie {
+    const [key] = cookie.split('=');
+    const cookieWithoutValue = cookie.substring(key.length + 1);
+    const [value, ...rest] = cookieWithoutValue.split(';');
+    const cookedCookie: Cookie = {key, value};
+    if (rest.length === 2) {
+      const [_, expires] = rest[0].split('=');
+      cookedCookie.expires = moment(expires.trim(), dateFormat);
+      cookedCookie.path = rest[1].trim();
+    }
+    if (rest.length === 1) {
+      cookedCookie.path = rest[0].trim();
+    }
+
+    return cookedCookie;
   }
-  if (rest.length === 1) {
-    cookedCookie.path = rest[0].trim();
-  }
-
-  return cookedCookie;
-}
-
-export const memoryCookieJar: InMemoryCookieJar = {
-  value: {},
 
   get cookie() {
     let result = '';
@@ -52,14 +48,14 @@ export const memoryCookieJar: InMemoryCookieJar = {
       result += `${key}=${cookieValue}; `;
     });
     return result.trim();
-  },
+  }
 
   set cookie(value) {
-    const cookie = parseCookie(value);
+    const cookie = this.parseCookie(value);
     if (moment().diff(cookie.expires) > 0) {
       delete this.value[cookie.key];
       return;
     }
     this.value[cookie.key] = cookie;
   }
-};
+}
