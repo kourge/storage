@@ -69,6 +69,11 @@ describe('storage', () => {
       memoryCookieJar.cookie = 'potato=yay';
       expect(cookieStorage.getItem('potato')).to.be.null;
     });
+
+    it('should return the key of a set item', () => {
+      cookieStorage.setItem('potato', 'true');
+      expect(cookieStorage.key(0)).to.equal('potato');
+    });
   });
 
   describe('local storage cookies', () => {
