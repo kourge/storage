@@ -1,9 +1,11 @@
 {
-  "name": "storage",
+  "name": "@urbandoor/storage",
   "version": "0.0.1",
   "description": "A library for returning a localStorage compatible API, regardless of browser",
   "main": "lib/index.js",
   "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
     "lint": "tslint ./src/**/*.ts",
     "test": "mocha --require ts-node/register ./src/**/*.spec.ts"
   },
