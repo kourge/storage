@@ -72,6 +72,9 @@ export class CookieStorage implements StorageEngine {
   }
 
   public key(index: number) {
-    return this.cookies[index] || null;
+    const prefixedName = this.cookies[index];
+    return prefixedName
+      ? prefixedName.substr(this.prefix.length).split('=')[0]
+      : null;
   }
 }
