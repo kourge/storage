@@ -2,8 +2,8 @@
   "name": "@urbandoor/storage",
   "version": "0.0.1",
   "description": "A library for returning a localStorage compatible API, regardless of browser",
-  "main": "lib/index.js",
-  "typings": "lib/index",
+  "main": "./lib/index.js",
+  "typings": "./lib/index",
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",

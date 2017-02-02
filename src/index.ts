@@ -1,5 +1,9 @@
 import {CookieJar, CookieStorage} from './cookie_storage';
+export {CookieJar, CookieStorage} from './cookie_storage';
+
 import {StorageEngine} from './storage_engine';
+export {StorageEngine} from './storage_engine';
+
 export default class UniversalStorage implements StorageEngine {
   private engine: StorageEngine;
 
