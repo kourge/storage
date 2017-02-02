@@ -2,7 +2,7 @@
 The type checked localStorage API you might have always been looking for.
 
 ## What this library does
-The localStorage polyfill and replacements is a crowded place. Most of these are 
+The land of localStorage polyfill and replacements is a crowded place. Most of these are 
 fantastic libraries, but none satisfied all the requirements that I wanted.
 
 1. Typechecked
