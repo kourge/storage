@@ -3,20 +3,20 @@ import {StorageEngine} from './storage_engine';
 export default class UniversalStorage implements StorageEngine {
   private engine: StorageEngine;
 
-  constructor(private session = false, private cookier: CookieJar = document) {
+  constructor(private isSession = false, private cookier: CookieJar = document) {
     try {
       localStorage.setItem('testtesttest', '1');
       localStorage.removeItem('testtesttest');
       // tslint:disable-next-line:no-string-literal
       if ('localStorage' in window && window['localStorage'] !== null) {
-        this.engine = this.session
+        this.engine = this.isSession
           ? window.sessionStorage
           : window.localStorage;
       } else {
-        this.engine = new CookieStorage(this.session, this.cookier);
+        this.engine = new CookieStorage(this.isSession, this.cookier);
       }
     } catch (_) {
-      this.engine = new CookieStorage(this.session, this.cookier);
+      this.engine = new CookieStorage(this.isSession, this.cookier);
     }
   }
 
