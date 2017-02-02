@@ -40,13 +40,9 @@ export class CookieStorage implements StorageEngine {
 
   public clear() {
     this.cookies.map(
-      (pair: string) => {
-        return pair.split('=')[0].trim().substring(this.prefix.length);
-      }
+      (pair: string) => pair.split('=')[0].trim().substring(this.prefix.length)
     ).forEach(
-      (name: string) => {
-        return this.removeItem(name);
-      }
+      (name: string) => this.removeItem(name)
     );
   }
 
@@ -76,8 +72,6 @@ export class CookieStorage implements StorageEngine {
   }
 
   public key(index: number) {
-    const val = this.cookies[index];
-
-    return val ? val : null;
+    return this.cookies[index] || null;
   }
 }

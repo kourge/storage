@@ -3,7 +3,10 @@ import {StorageEngine} from './storage_engine';
 export default class UniversalStorage implements StorageEngine {
   private engine: StorageEngine;
 
-  constructor(private isSession = false, private cookier: CookieJar = document) {
+  constructor(
+    private isSession = false,
+    private cookier: CookieJar = document
+  ) {
     try {
       localStorage.setItem('testtesttest', '1');
       localStorage.removeItem('testtesttest');
