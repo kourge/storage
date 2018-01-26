@@ -32,6 +32,29 @@ describe('parseCookie', () => {
     });
   });
 
+  describe('with domain', () => {
+    beforeEach(() => {
+      result = memoryCookieJar
+        .parseCookie('key=value; domain=.example.com; path=/');
+    });
+
+    it('should have a key of key', () => {
+      expect(result.key).to.equal('key');
+    });
+
+    it('should have a value of value', () => {
+      expect(result.value).to.equal('value');
+    });
+
+    it('should have a domain of .example.com=/', () => {
+      expect(result.domain).to.equal('.example.com');
+    });
+
+    it('should have a path of path=/', () => {
+      expect(result.path).to.equal('path=/');
+    });
+  });
+
   describe('with dates', () => {
     let now = new Date();
     beforeEach(() => {
@@ -49,6 +72,36 @@ describe('parseCookie', () => {
 
     it('should have a path of path=/', () => {
       expect(result.path).to.equal('path=/');
+    });
+
+    it('should have an expiry of now', () => {
+      expect(moment(now.toUTCString(), dateFormat)).to.eql(result.expires);
+    });
+  });
+
+  describe('with dates and domains', () => {
+    let now = new Date();
+    beforeEach(() => {
+      result = memoryCookieJar
+        .parseCookie(
+          `key=value; expires=${now.toUTCString()}; domain=.example.com; path=/`
+        );
+    });
+
+    it('should have a key of key', () => {
+      expect(result.key).to.equal('key');
+    });
+
+    it('should have a value of value', () => {
+      expect(result.value).to.equal('value');
+    });
+
+    it('should have a path of path=/', () => {
+      expect(result.path).to.equal('path=/');
+    });
+
+    it('should have a domain of .example.com', () => {
+      expect(result.domain).to.equal('.example.com');
     });
 
     it('should have an expiry of now', () => {

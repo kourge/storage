@@ -8,6 +8,7 @@ export interface Cookie {
   value: string;
   expires?: moment.Moment;
   path?: string;
+  domain?: string;
 }
 
 export class InMemoryCookieJar implements CookieJar {
@@ -18,14 +19,22 @@ export class InMemoryCookieJar implements CookieJar {
     const cookieWithoutValue = cookie.substring(key.length + 1);
     const [value, ...rest] = cookieWithoutValue.split(';');
     const cookedCookie: Cookie = {key, value};
-    if (rest.length === 2) {
-      const [_, expires] = rest[0].split('=');
-      cookedCookie.expires = moment(expires.trim(), dateFormat);
-      cookedCookie.path = rest[1].trim();
-    }
-    if (rest.length === 1) {
-      cookedCookie.path = rest[0].trim();
-    }
+
+    rest.forEach((section) => {
+      const [k, v] = section.split('=');
+      switch (k.trim()) {
+        case 'expires':
+          cookedCookie.expires = moment(v.trim(), dateFormat);
+          break;
+        case 'domain':
+          cookedCookie.domain = v.trim();
+          break;
+        case 'path':
+          cookedCookie.path = section.trim();
+          break;
+        default:
+      }
+    });
 
     return cookedCookie;
   }

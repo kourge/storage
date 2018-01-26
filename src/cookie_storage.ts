@@ -11,21 +11,26 @@ export function makeCookie(
   key: string,
   data: string,
   days: number,
-  prefix: string
+  prefix: string,
+  domain?: string
 ): string {
   const date = new Date();
   date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
   const expires = days !== 0
     ? `; expires=${date.toUTCString()}`
     : '';
-  return `${prefix}${key}=${data}${expires}; path=/`;
+  const domainScope = domain !== undefined
+    ? `; domain=${domain}`
+    : '';
+  return `${prefix}${key}=${data}${expires}${domainScope}; path=/`;
 }
 
 export class CookieStorage implements StorageEngine {
   constructor(
     private readonly isSession: boolean,
     private readonly cookieJar: CookieJar,
-    private readonly prefix = '__storage__'
+    private readonly prefix = '__storage__',
+    private readonly domain?: string
   ) {}
 
   private get cookies(): string[] {
@@ -63,8 +68,8 @@ export class CookieStorage implements StorageEngine {
 
   public setItem(key: string, data: string): void {
     this.cookieJar.cookie = this.isSession
-      ? makeCookie(key, data, SESSION_STORAGE_DAYS, this.prefix)
-      : makeCookie(key, data, LOCAL_STORAGE_DAYS, this.prefix);
+      ? makeCookie(key, data, SESSION_STORAGE_DAYS, this.prefix, this.domain)
+      : makeCookie(key, data, LOCAL_STORAGE_DAYS, this.prefix, this.domain);
   }
 
   public removeItem(key: string) {

@@ -32,6 +32,25 @@ describe('storage', () => {
       });
     });
 
+    it('should add a cookie with domain', () => {
+      const domainCookieJar = new InMemoryCookieJar();
+      const cookieWithDomainStorage = new CookieStorage(
+        true,
+        domainCookieJar,
+        '__storage__',
+        '.potato.com'
+      );
+      cookieWithDomainStorage.setItem('potato', 'true');
+      expect(domainCookieJar.value).to.eql({
+        __storage__potato: {
+          key: '__storage__potato',
+          value: 'true',
+          domain: '.potato.com',
+          path: 'path=/'
+        }
+      });
+    });
+
     it('should get the cookie', () => {
       cookieStorage.setItem('potato', 'true');
       expect(cookieStorage.getItem('potato')).to.equal('true');
