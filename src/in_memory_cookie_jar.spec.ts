@@ -46,7 +46,7 @@ describe('parseCookie', () => {
       expect(result.value).to.equal('value');
     });
 
-    it('should have a domain of .example.com=/', () => {
+    it('should have a domain of .example.com', () => {
       expect(result.domain).to.equal('.example.com');
     });
 
